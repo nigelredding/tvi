@@ -1,3 +1,9 @@
+/**
+ * Tiny vi clone.
+ *
+ * nvr 2023-02-08
+ */
+
 #include <stdio.h>
 
 char *filename = "sample.txt";
@@ -21,11 +27,15 @@ void print_cell(list_t *cell) {
  * Prints the list, given the head
  */
 void print_list(list_t *head) {
-	while ((head=head->next)) {
+	if (!head) {
+		return;
+	}
+	while (head) {
 		print_cell(head);
 		if (head->next) {
 			printf(" -> ");
 		}
+		head = head->next;
 	}
 }
 
@@ -79,7 +89,17 @@ list_t *delete(list_t *head, int idx) {
 		}
 		cur = cur->next;
 	}
-	// FINISH
+	
+	list_t *to_delete = cur->next;
+	if (!to_delete) {
+		return NULL;
+	} else {
+		free((void *)to_delete->data);
+	}
+
+	cur->next = cur->next->next;
+	
+	return head;
 }
 
 /**
