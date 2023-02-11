@@ -163,6 +163,7 @@ typedef struct editor_file {
 	list_t *cur; // cursor
 	int num_lines;
 	int row_idx;
+	int col_idx;
 } editor_file;
 
 
@@ -188,6 +189,7 @@ editor_file read_file(char *filename) {
 	ef.lis = make_list_from_text(ef.buffer);
 	ef.cur = ef.lis;
 	ef.row_idx = 0;
+	ef.col_idx = 0;
 
 	return ef;
 }
@@ -215,6 +217,7 @@ void go_down(editor_file *file) {
 		return;
 	}
 	file->row_idx++;
+	file->col_idx = 0; // TODO match vi behaviour
 	file->cur = file->cur->next;
 }
 
@@ -226,7 +229,29 @@ void go_up(editor_file *file) {
 		return;
 	}
 	file->row_idx--;
+	file->col_idx = 0; // TODO match vi behaviour
 	file->cur = file->cur->prev;
+}
+
+/**
+ * Updates col_idx to go left
+ */
+int go_left(editor_file *file) {
+	if (file->col_idx == 0) {
+		return 0;
+	}
+	file->col_idx--;
+	return 1;
+}
+
+/**
+ * Updates col_idx to go right
+ */
+int go_right(editor_file *file) {
+	if (file->col_idx == strlen(file->cur->data)) {
+		return 0;
+	}
+	file->col_idx++;
 }
 
 /**
